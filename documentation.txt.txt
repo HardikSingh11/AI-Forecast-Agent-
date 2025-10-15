@@ -1,0 +1,99 @@
+Project Documentation – Smart Demand & Trend Forecasting Agent
+------------------------------------------------------------------------------
+
+1) Overview
+A small Streamlit tool that standardises the “first pass” on a time-series:
+- cleans and resamples the series
+- fits a Prophet forecast
+- reports simple error metrics
+- shows a seasonal decomposition (when possible)
+- produces a short commentary in plain language
+Everything runs locally.
+
+2) Problem & Scope
+Problem: repeated “quick forecasts” are slow and inconsistent when done by hand.
+Scope:
+- single metric at a time
+- daily/weekly/monthly data
+- local, lightweight text generation (no paid APIs)
+Out of scope:
+- multivariate/exogenous regressors
+- production scheduling and alerting
+- full backtesting suite (future work)
+
+3) How it works (summary)
+- Read CSV/XLSX → detect date & numeric columns (user can override)
+- Resample to a tidy index; fill small gaps
+- Fit Prophet; forecast horizon in days/weeks/months
+- Metrics (MAPE/MAE/RMSE) on historical range
+- Optional decomposition (trend/seasonal/residual)
+- Commentary from a small local model
+- Export forecast to CSV
+
+4) Components
+- forecasting_utils.py: prepare_data(), build_forecast(), in_sample_metrics(), seasonal_decompose_figure()
+- forecast_agent_app.py: Streamlit UI and workflow
+- generate_time_data.py: quick synthetic data generator
+
+5) Data requirements
+- One date/datetime column
+- One numeric metric to forecast
+- Reasonable frequency (daily/weekly/monthly). App can infer or accept manual input.
+
+6) Privacy & security
+- Local-first: no data leaves the machine
+- Insight model only rephrases computed statistics
+- Keep sample datasets light and non-sensitive
+
+7) Roadmap ideas
+- ARIMA/Auto-ARIMA toggle
+- Holiday effects (Prophet country calendars)
+- Exogenous regressors (price, promo, weather)
+- Proper backtesting (hold-out / rolling)
+- Database connectors and scheduled runs
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+FAQ
+-----
+Q: Can it forecast more than one metric at once?
+A: One at a time. The UI is simpler and results are easier to interpret.
+
+Q: Do I need the internet?
+A: Only for initial package/model download. After that, it runs locally.
+
+Q: How accurate is it?
+A: It’s a quick first pass. Use metrics as a guide; add backtesting for robust evaluation.
+
+Q: Why not GPT-4 for commentary?
+A: To keep cost and setup near zero. The code is modular — swapping to a paid API is straightforward if needed.
+
+Q: What if model downloads are slow?
+A: Use `distilgpt2` for very fast, small downloads; it’s good enough for short text.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+License (MIT)
+
+MIT License
+
+Copyright (c) 2025 Hardik Singh
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
